@@ -4,13 +4,31 @@ This Example will show you how to use register_next_step handler.
 """
 
 import telebot
+import time
 from telebot import types
 
-API_TOKEN = '1001524903:AAHomEGG2F4e693nwFHIWtd5IYaz5_e6yQQ'
+TOKEN = '1001524903:AAGd1e_x2F9GTMqfvGSEuT7gDtPUwPsLmG4'
 
-bot = telebot.TeleBot(API_TOKEN)
+bot = telebot.TeleBot(TOKEN)
 
 user_dict = {}
+
+
+commands = {  # command description used in the "help" command
+    'start'         : 'memulai bot',
+    'hargamakan'    : 'memberi harga makanan yang dijual',
+    'hargaminum'    : 'memberi harga minuman yang dijual',
+    'pesan'         : 'memesan makanan'
+}
+
+hargalistmakan = ['Mie Ayam', 'Bakso' , 'Mie Ayam Bakso' ]
+hargalistminum = ['Es Teh' , 'Es Jeruk' ]
+
+hargamakan = types.ReplyKeyboardMarkup(one_time_keyboard=True)  
+hargaminum = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+hargamakan.add('Mie Ayam','Bakso', 'Mie Ayam Bakso')
+hargaminum.add('Es Teh','Es Jeruk')
+hideBoard = types.ReplyKeyboardRemove()
 
 
 class User:
@@ -20,17 +38,78 @@ class User:
         self.minuman = None
        
 
+# Handle '/start' 
 
-# Handle '/start' and '/help'
-@bot.message_handler(commands=['help', 'start'])
+@bot.message_handler(commands=['start'])
+def command_start(m):
+    cid = m.chat.id
+    bot.send_message(cid, "Selamat datang di warung Mie Ayam & Bakso Mang Ujang")
+    bot.send_chat_action(cid, 'typing')  # show the bot "typing" (max. 5 secs)
+    time.sleep(1)
+    menubot = "berikut list perintah yang tersedia\n"
+    for key in commands:  # generate help text out of the commands dictionary defined at the top
+        menubot += "/" + key + ": "
+        menubot += commands[key] + "\n"
+    bot.send_message(cid, menubot)
+
+@bot.message_handler(commands=['hargamakan'])
+def perintahhargamakan(m):
+    cid = m.chat.id
+    bot.send_message(cid,'berikut list harga yang kami sediakan',reply_markup=hargamakan)
+   
+    
+@bot.message_handler(func=lambda m : m.text in hargalistmakan)
+def listhargamakan(m):
+    cid = m.chat.id
+    text = m.text 
+ 
+    bot.send_chat_action(cid, 'typing')
+
+    if text == 'Mie Ayam':  
+        bot.send_photo(cid, open('mieayam.jpg', 'rb'),reply_markup=hideBoard) 
+        bot.send_message(cid,'\n Harga Mie Ayam = Rp. 8.000')
+    elif text == 'Bakso':
+        bot.send_photo(cid, open('bakso.jpg', 'rb'), reply_markup=hideBoard)
+        bot.send_message(cid,'\n Harga Bakso = Rp. 10.000')
+    elif text == 'Mie Ayam Bakso':
+        bot.send_photo(cid, open('mieayambakso.jpg', 'rb'), reply_markup=hideBoard) 
+        bot.send_message(cid,'\n Harga Mie Ayam Bakso = Rp. 13.000')  
+    else:
+        bot.send_message(cid, "Not Defined!")
+        bot.send_message(cid, "Please try again")
+
+
+@bot.message_handler(commands=['hargaminum'])
+def perintahhargaminum(m):
+    cid = m.chat.id
+    bot.send_message(cid,'berikut list harga yang kami sediakan',reply_markup=hargaminum)
+   
+    
+@bot.message_handler(func=lambda m : m.text in hargalistminum)
+def listhargaminum(m):
+    cid = m.chat.id
+    text = m.text
+ 
+    bot.send_chat_action(cid, 'typing')
+
+    if text == 'Es Teh':  
+        bot.send_photo(cid, open('esteh.jpg', 'rb'),reply_markup=hideBoard) 
+        bot.send_message(cid,'\n Harga Es Teh = Rp. 2500')
+    elif text == 'Es Jeruk':
+        bot.send_photo(cid, open('esjeruk.jpg', 'rb'), reply_markup=hideBoard)
+        bot.send_message(cid,'\n Harga Es Jeruk = Rp. 4000')  
+    else:
+        bot.send_message(cid, "Not Defined!")
+        bot.send_message(cid, "Please try again")
+
+@bot.message_handler(commands=['pesan'])
 def send_welcome(message):
     cid = message.chat.id
-    msg = bot.reply_to(message,'Halo, Saya sufi_bot. Selamat Datang Diwarung Mie Ayam Bakso Mang Ujang')
+    msg = bot.reply_to(message,'Oke, mari saya bantu anda untuk memesan makanan')
     msg = bot.send_message(cid ,'Siapa Nama Anda?')
     
     bot.register_next_step_handler(msg, process_name_step)
    
-
 
 def process_name_step(message):
     try:
@@ -39,7 +118,7 @@ def process_name_step(message):
         user = User(name)
         user_dict[chat_id] = user  
         markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
-        markup.add('Bakso','Mie Ayam','Mie Ayam Bakso')
+        markup.add('Mie Ayam','Bakso','Mie Ayam Bakso')
         msg = bot.reply_to(message, user.name+ '. Makanan apa yang ingin anda pesan?',reply_markup=markup)
         bot.register_next_step_handler(msg, process_panganan_step)
     except Exception as e:

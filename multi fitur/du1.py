@@ -2,7 +2,7 @@ import time
 import telebot
 from telebot import types
 
-TOKEN = '1001524903:AAHomEGG2F4e693nwFHIWtd5IYaz5_e6yQQ'
+TOKEN = '1001524903:AAGd1e_x2F9GTMqfvGSEuT7gDtPUwPsLmG4'
 # knownUsers = []  # todo: save these in a file,
 # userStep = {}  # so they won't reset every time the bot restarts
 
@@ -69,11 +69,11 @@ def command_start(m):
 @bot.message_handler(commands=['help'])
 def command_help(m):
     cid = m.chat.id
-    help_text = "The following commands are available: \n"
+    mboh = "The following commands are available: \n"
     for key in commands:  # generate help text out of the commands dictionary defined at the top
-        help_text += "/" + key + ": "
-        help_text += commands[key] + "\n"
-    bot.send_message(cid, help_text)  # send the generated help page
+        mboh += "/" + key + ": "
+        mboh += commands[key] + "\n"
+    bot.send_message(cid, mboh)  # send the generated help page
 
 
 # chat_action example (not a good one...)
