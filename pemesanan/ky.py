@@ -7,7 +7,7 @@ import telebot
 import time
 from telebot import types
 
-TOKEN = '1001524903:AAGd1e_x2F9GTMqfvGSEuT7gDtPUwPsLmG4'
+TOKEN = '1407437021:AAHiFWk4fj4_f1FM16FDJH7NmE-PQwaRo9s'
 
 bot = telebot.TeleBot(TOKEN)
 
@@ -18,7 +18,8 @@ commands = {  # command description used in the "help" command
     'start'         : 'memulai bot',
     'hargamakan'    : 'memberi harga makanan yang dijual',
     'hargaminum'    : 'memberi harga minuman yang dijual',
-    'pesan'         : 'memesan makanan'
+    'pesan'         : 'memesan makanan',
+    'alamat'        : 'alamat warung mie ayam bakso arjuna'
 }
 
 hargalistmakan = ['Mie Ayam', 'Bakso' , 'Mie Ayam Bakso' ]
@@ -43,7 +44,7 @@ class User:
 @bot.message_handler(commands=['start'])
 def command_start(m):
     cid = m.chat.id
-    bot.send_message(cid, "Selamat datang di warung Mie Ayam & Bakso Mang Ujang")
+    bot.send_message(cid, "Selamat datang di warung Mie Ayam & Bakso Pak Mitro")
     bot.send_chat_action(cid, 'typing')  # show the bot "typing" (max. 5 secs)
     time.sleep(1)
     menubot = "berikut list perintah yang tersedia\n"
@@ -56,6 +57,19 @@ def command_start(m):
 def perintahhargamakan(m):
     cid = m.chat.id
     bot.send_message(cid,'berikut list harga yang kami sediakan',reply_markup=hargamakan)
+
+@bot.message_handler(commands=['alamat'])
+def command_alamat(m):
+    cid = m.chat.id
+    bot.send_chat_action(cid, 'typing')  # show the bot "typing" (max. 5 secs)
+    time.sleep(1)
+    bot.send_message(cid, "Jalan Bulu Stalan, Bulustalan, Semarang Selatan, Bulustalan, Kec. Semarang Sel., Kota Semarang, Jawa Tengah 50245")
+    bot.send_chat_action(cid, 'typing')  # show the bot "typing" (max. 5 secs)
+    time.sleep(1)
+    bot.send_message(cid, "Berikut akan kami kirimkan lokasi warung.. Tunggu sebentar kak")
+
+    # bot.send_video(cid, open('alamat.mp4', 'rb'))
+    bot.send_location(cid,-6.9826619,110.4042063)
    
     
 @bot.message_handler(func=lambda m : m.text in hargalistmakan)
@@ -169,6 +183,14 @@ def process_minuman_step(message):
         
     except Exception as e:
         bot.reply_to(message, 'oooops')
+
+
+
+  
+
+
+
+
         
 
 

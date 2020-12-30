@@ -2,7 +2,7 @@ import time
 import telebot
 from telebot import types
 
-TOKEN = '1001524903:AAGd1e_x2F9GTMqfvGSEuT7gDtPUwPsLmG4'
+TOKEN = '1001524903:AAGxA6KojYv5W9QGACHRWSC2AT4m3DtBow4'
 # knownUsers = []  # todo: save these in a file,
 # userStep = {}  # so they won't reset every time the bot restarts
 
@@ -88,10 +88,10 @@ def command_long_text(m):
 
 
 # user can chose an image (multi-stage command example)
-@bot.message_handler(commands=['gambar'])
+@bot.message_handler(commands=['media'])
 def command_image(m):
     cid = m.chat.id
-    bot.send_message(cid, "Please choose your image now", reply_markup=imageSelect)  # show the keyboard
+    bot.send_message(cid, "pilih menu berikut", reply_markup=imageSelect)  # show the keyboard
     # userStep[cid] = 1  # set the user to the next step (expecting a reply in the listener now)
 
 
